@@ -440,8 +440,16 @@ namespace esphome
                     // FE BF 00:Any new clients?
                     if (input_queue[2] == 0xFE && input_queue[4] == 0x00)
                     {
-                        ESP_LOGD(TAG, "Spa/node/id: %s", "Requesting ID");
-                        ID_request();
+                        if (use_client_id_override && client_id == 0)
+                        {
+                            client_id = client_id_override;
+                            ESP_LOGD(TAG, "Spa/node/id: Forcing override ID: %d (skipping negotiation)", client_id);
+                        }
+                        else
+                        {
+                            ESP_LOGD(TAG, "Spa/node/id: %s", "Requesting ID");
+                            ID_request();
+                        }
                     }
                 }
                 else if (input_queue[2] == client_id && input_queue[4] == 0x06)
